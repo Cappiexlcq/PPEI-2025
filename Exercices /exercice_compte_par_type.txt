@@ -1,0 +1,9 @@
+Nombre de Location en 2018: 3110
+Nombre de Location en 2016: 3144
+Nombre de Location en 2017:     2466
+Nombre de Location en 2016:     3144
+Nombre de Location en 2017:     2466
+Nombre de Location en 2018:     3110
+Nombre de Person en 2016:     2400
+Nombre de Person en 2017:     1568
+Nombre de Person en 2018:     1090
