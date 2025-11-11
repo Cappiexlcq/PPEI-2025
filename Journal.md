@@ -53,6 +53,7 @@ Else va stocker les URL non valides dans NOK.
 < $FICHIERS_URLS indique où se trouvent les lignes à lire 
 On fini par afficher les URL valides et non valides via echo. 
 
+#### Mini Projet 
 Pourquoi ne pas utiliser cat ? 
 
 Ajouter cat au script ne servirait à rien car while read -r line lit directement le fichier, l'ajouter alourdirait le script. 
