@@ -1,28 +1,56 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-URLS=$1
-compteur=0
-
-if [ $# -eq 0 ]; then
-    echo "Erreur"
+if [ $# -ne 1 ]
+then
+    echo "Le script attend exactement un argument"
     exit 1
 fi
 
-while read -r line; do
-   
-    code_http=$(curl -s -o /dev/null -w "%{http_code}" "$line")
-if [[ "$code_http" -ge 400 ]]; then
-    status="Erreur $code_http"
-else
-    status="$code_http"
-fi
+fichier_urls=$1
 
-    encodage=$(curl -sI "$line" | grep -i "Content-Type" | sed -n 's/.*charset=\([^ ;]*\).*/\1/p' | tr -d '\r\n')
-    if [ -z "$encodage" ]; then
-        encodage="inconnu"
+echo "<html>
+    <head>
+        <meta charset=\"UTF-8\">
+    </head>
+
+    <body>
+        <table>
+            <tr>
+                <th>numero</th>
+                <th>URL</th>
+                <th>code</th>
+                <th>encodage</th>
+                <th>nombre de mots</th>
+            </tr>"
+
+lineno=1
+while read -r line
+do
+    data=$(curl -s -i -L -w "%{http_code}\n%{content_type}" -o ./.data.tmp $line)
+    http_code=$(echo "$data" | head -1)
+    encoding=$(echo "$data" | tail -1 | grep -Po "charset=\S+" | cut -d"=" -f2)
+
+    if [ -z "${encoding}" ]
+    then
+        encoding="N/A" # petit raccourci qu'on peut utiliser à la place du if : encoding=${encoding:-"N/A"}
     fi
-    contenu=$(curl -s "$line")
-    nb_mots=$(echo "$contenu" | sed 's/<[^>]*>//g' | wc -w)
-    echo -e "${compteur}\t${line}\t${code_http}\t${encodage}\t${nb_mots}" >> tableau.tsv
-    compteur=$((compteur + 1))
-done < "$URLS"
+
+    nbmots=$(cat ./.data.tmp | lynx -dump -nolist -stdin | wc -w)
+
+    echo -e "           <tr>
+                <td>$lineno</td>
+                <td>$line</td>
+                <td>$http_code</td>
+                <td>$encoding</td>
+                <td>$nbmots</td>
+            </tr>"
+
+    lineno=$(expr $lineno + 1)
+done < $fichier_urls
+
+echo "      </table>
+    </body>
+</html>"
+
+
+rm ./.data.tmp
