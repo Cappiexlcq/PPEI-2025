@@ -10,7 +10,24 @@ fichier_urls=$1
 
 echo "<html>
     <head>
+        <head>
         <meta charset=\"UTF-8\">
+        <style>
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            table, th, td {
+                border: 1px solid black;
+            }
+            th, td {
+                padding: 8px;
+                text-align: left;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+        </style>
     </head>
 
     <body>
